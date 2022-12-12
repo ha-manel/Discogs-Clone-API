@@ -4,13 +4,18 @@ class RecordsController < ApplicationController
     @genres = Record.group(:genre).count(:genre)
     @artists = Record.group(:artist).count(:artist)
 
-    render json: { records: Record.all, stats: {year: @years, genre: @genres, artist: @artists} }
+    @records = Record.all.with_attached_image_data
+  
+    render json: {
+      records: @records.map { |record| record.as_json.merge({ image_data: url_for(record.image_data) })},
+      stats: {year: @years, genre: @genres, artist: @artists},
+    }
   end
 
   def create
     @record = Record.new(record_params)
     if @record.save
-      render json: { status: :created, record: @record }
+      render json: { status: :created, record: @record.as_json.merge({ image_data: url_for(@record.image_data) }) }
     else
       render json: { errors: @record.errors.full_messages }, status: :internal_server_error
     end
@@ -24,6 +29,6 @@ class RecordsController < ApplicationController
   private
 
   def record_params
-    params.require(:record).permit(:title, :artist, :year, :genre, :image_data)
+    params.permit(:title, :artist, :year, :genre, :image_data)
   end
 end
