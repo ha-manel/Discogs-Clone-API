@@ -1,10 +1,10 @@
 class RecordsController < ApplicationController
   def index
-    @years = Record.group(:year).distinct.count(:year)
-    @genres = Record.group(:genre).distinct.count(:genre)
-    @artists = Record.group(:artist).distinct.count(:artist)
+    @years = Record.group(:year).count(:year)
+    @genres = Record.group(:genre).count(:genre)
+    @artists = Record.group(:artist).count(:artist)
 
-    render json: { records: Record.all, years: @years, genres: @genres, artists: @artists }
+    render json: { records: Record.all, stats: {year: @years, genre: @genres, artist: @artists} }
   end
 
   def create
