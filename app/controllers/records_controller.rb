@@ -9,7 +9,7 @@ class RecordsController < ApplicationController
     render json: {
       records: @records.map { |record| record.as_json.merge({ image_data: url_for(record.image_data) }) },
       stats: { year: @years, genre: @genres, artist: @artists }
-    }
+    }, stats: :ok
   end
 
   def create
@@ -25,7 +25,7 @@ class RecordsController < ApplicationController
       @record = Record.new(record_params)
     end
     if @record.save
-      render json: { status: :created, record: @record.as_json.merge({ image_data: url_for(@record.image_data) }) }
+      render json: { status: :created, record: @record.as_json.merge({ image_data: url_for(@record.image_data) }) }, status: :created
     else
       render json: { errors: @record.errors.full_messages }, status: :internal_server_error
     end
