@@ -5,21 +5,22 @@ class RecordsController < ApplicationController
     @artists = Record.group(:artist).count(:artist)
 
     @records = Record.all.with_attached_image_data
-  
+
     render json: {
-      records: @records.map { |record| record.as_json.merge({ image_data: url_for(record.image_data) })},
-      stats: {year: @years, genre: @genres, artist: @artists},
+      records: @records.map { |record| record.as_json.merge({ image_data: url_for(record.image_data) }) },
+      stats: { year: @years, genre: @genres, artist: @artists }
     }
   end
 
   def create
-    if params[:image_data] == "null"
-      @record = Record.new()
+    if params[:image_data] == 'null'
+      @record = Record.new
       @record.title = params[:title]
       @record.artist = params[:artist]
       @record.year = params[:year]
       @record.genre = params[:genre]
-      @record.image_data.attach(io: File.open(Rails.root.join("app", "assets", "images", "default.png")), filename: 'default.png' , content_type: "image/png")
+      @record.image_data.attach(io: File.open(Rails.root.join('app', 'assets', 'images', 'default.png')),
+                                filename: 'default.png', content_type: 'image/png')
     else
       @record = Record.new(record_params)
     end
