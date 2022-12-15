@@ -84,5 +84,6 @@ test:
 production:
   <<: *default
   database: Discogs_Clone_API_production
+  url: <%= ENV['DATABASE_URL'] %>
   username: Discogs_Clone_API
   password: <%= ENV["DISCOGS_CLONE_API_DATABASE_PASSWORD"] %>
